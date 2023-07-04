@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { usernameVarmi, rolAdiGecerlimi } = require('./auth-middleware');
+const { usernameVarmi, rolAdiGecerlimi,checkPayload,generateToken } = require('./auth-middleware');
 const { JWT_SECRET } = require("../secrets"); // bu secret'ı kullanın!
 const bcrypt = require('bcryptjs');
 const userModel = require("../users/users-model")
@@ -34,7 +34,7 @@ router.post("/register", rolAdiGecerlimi, async (req, res, next) => {
 });
 
 
-router.post("/login", usernameVarmi, (req, res, next) => {
+router.post("/login",checkPayload, usernameVarmi, async (req, res, next) => {
   /**
     [POST] /api/auth/login { "username": "sue", "password": "1234" }
 
@@ -53,6 +53,13 @@ router.post("/login", usernameVarmi, (req, res, next) => {
       "role_name": "admin" // giriş yapan kulanıcının role adı
     }
    */
+  try {  
+  const token = generateToken(req.userData);
+  res.json({message: `${req.userData.username} geri geldi`,
+  token:token})  
+  } catch (error) {
+    
+  }
 });
 
 module.exports = router;

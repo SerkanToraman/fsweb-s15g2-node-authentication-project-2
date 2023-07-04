@@ -1,6 +1,7 @@
 const { JWT_SECRET } = require("../secrets"); // bu secreti kullanın!
 const userModel = require('../users/users-model')
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const sinirli = (req, res, next) => {
   /*
@@ -76,6 +77,7 @@ const usernameVarmi = async (req, res, next) => {
   if(userIsExist&&userIsExist.length>0){
       const user = userIsExist[0];
       if(bcrypt.compareSync(req.body.password, user.password)){
+
         req.userData=user;
         next();
       }else{
@@ -157,6 +159,19 @@ const checkPayload = (req,res,next)=>{
   }
 }
 
+function generateToken(user){
+  const payload = {
+      subject: user.user_id,
+      usename: user.usename,
+      role_name: user.role_name
+  }
+  const options = {
+      expiresIn: "1d"
+  }
+  const token = jwt.sign(payload, JWT_SECRET, options);
+  return token;
+}
+
 
 
 module.exports = {
@@ -164,5 +179,6 @@ module.exports = {
   usernameVarmi,
   rolAdiGecerlimi,
   sadece,
-  checkPayload
+  checkPayload,
+  generateToken
 }
