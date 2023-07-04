@@ -21,7 +21,7 @@ function bul() {
 
   return db('users as u')
           .leftJoin("roles as r","r.role_id","u.role_id")
-          .select("u.user_id","u_username","r.role_name");
+          .select("u.user_id","u.username","r.role_name");
 }
 
 function goreBul(filtre) {
@@ -41,7 +41,7 @@ function goreBul(filtre) {
   return db('users as u')
           .leftJoin("roles as r","r.role_id","u.role_id")
           .select("u.*","r.role_name") 
-         .where(filtre)
+          .where(filtre)
 }
 
 function idyeGoreBul(user_id) {

@@ -20,7 +20,7 @@ const sinirli = (req, res, next) => {
     Alt akıştaki middlewarelar için hayatı kolaylaştırmak için kodu çözülmüş tokeni req nesnesine koyun!
   */
  try {
-  const token= req.headers.authotization;
+  const token= req.headers.authorization;
   if(token){
       jwt.verify(token,JWT_SECRET,(err,decodedJWT)=>{
         if(err){
@@ -77,7 +77,6 @@ const usernameVarmi = async (req, res, next) => {
   if(userIsExist&&userIsExist.length>0){
       const user = userIsExist[0];
       if(bcrypt.compareSync(req.body.password, user.password)){
-
         req.userData=user;
         next();
       }else{
@@ -124,6 +123,7 @@ const rolAdiGecerlimi = async (req, res, next) => {
         }
       }else{
         req.body.role_name ="student"
+        next();
       }
 
       // const roleNameIsExist = await userModel.goreBul({role_name:req.body.role_name});
@@ -150,7 +150,7 @@ const checkPayload = (req,res,next)=>{
   try {
     let {username,password} = req.body;
     if(!username || !password){
-      res.status(400).json({messsage:"Eksik alan var"});
+      res.status(400).json({messsage:"Datalariniz varmi dikkat ediniz"});
     }else{
       next();
     }
